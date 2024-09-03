@@ -11,7 +11,7 @@ This project is a Library Management System built with Laravel. The system allow
 - **Book Filtering:** Search and filter books by author, category, and availability.
 - **Validation & Custom Error Messages:** Form requests are used to validate data with customized validation rules and error messages.
 
-##Requirements
+## Requirements
 - **PHP** >= 8.0
 - **Laravel** >= 9.0
 - **Composer**
