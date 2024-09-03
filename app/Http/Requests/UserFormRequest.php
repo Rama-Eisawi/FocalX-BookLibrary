@@ -90,9 +90,7 @@ class UserFormRequest extends FormRequest
     {
         // Customize the failed validation response.
         throw new HttpResponseException(
-            ApiResponse::error(
-                [$validator->errors()],
-                'Validation errors occurred during the update.',
+            ApiResponse::error('Validation errors occurred during the update.',
                 422
             )
         );

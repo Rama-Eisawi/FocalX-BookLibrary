@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->date('borrowed_at');
             $table->date('due_date');
-            $table->date('returned_at');
+            $table->date('returned_at')->nullable();
             $table->timestamps();
         });
     }

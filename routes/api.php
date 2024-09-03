@@ -27,5 +27,7 @@ Route::controller(AuthController::class)
     });
 
 
-
-Route::apiResource('borrow', BorrowRecordController::class)->middleware('auth:api');
+Route::middleware(['auth:api'])->group(function () {
+    Route::apiResource('borrow', BorrowRecordController::class);
+    Route::post('borrow-records/{id}/return', [BorrowRecordController::class, 'returnBook']);
+});

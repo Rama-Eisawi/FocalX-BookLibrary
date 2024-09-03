@@ -113,7 +113,6 @@ class AuthFormRequest extends FormRequest
         // Customize the failed validation response.
         throw new HttpResponseException(
             ApiResponse::error(
-                [$validator->errors()],
                 'Validation errors occurred .',
                 422
             )

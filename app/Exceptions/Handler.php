@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use InvalidArgumentException;
 use Throwable;
+use Illuminate\Auth\AuthenticationException;
+use App\Http\Responses\ApiResponse;
 
 class Handler extends ExceptionHandler
 {
@@ -29,13 +31,19 @@ class Handler extends ExceptionHandler
             //
         });
     }
-
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            // Customize the JSON response for unauthenticated users
+            return ApiResponse::error('Please log in first.', 401);
+        }
+    }
     public function render($request, Throwable $exception)
     {
         // Handle Not Found exceptions
-        if ($exception instanceof ModelNotFoundException) {
+        /*if ($exception instanceof ModelNotFoundException) {
             return response()->json(['message' => 'Resource not found', 'status' => 404], 404);
-        }
+        }*/
 
         // Handle Invalid Argument exceptions
         if ($exception instanceof InvalidArgumentException) {
