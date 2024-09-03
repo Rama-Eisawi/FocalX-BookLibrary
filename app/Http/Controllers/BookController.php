@@ -6,8 +6,6 @@ use App\Http\Requests\BookFormRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Book;
 use App\Services\BookService;
-use GuzzleHttp\Promise\Create;
-use Illuminate\Http\Request;
 
 class BookController extends Controller
 {

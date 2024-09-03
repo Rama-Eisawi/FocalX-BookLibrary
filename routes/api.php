@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\{BookController, UserController};
-use Illuminate\Http\Request;
+use App\Http\Controllers\{AuthController, BookController, BorrowRecordController, UserController};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,4 +15,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('book', BookController::class);
+
 Route::apiResource('user', UserController::class);
+
+Route::controller(AuthController::class)
+    ->prefix('auth')
+    ->group(function () {
+        Route::post('register', 'register')->name('auth.register');
+        Route::post('login', 'login')->name('auth.login');
+        Route::post('logout', 'logout')->name('auth.logout')->middleware('auth:api'); //This middleware ensures that the user is authenticated via a JWT token
+    });
+
+
+
+Route::apiResource('borrow', BorrowRecordController::class)->middleware('auth:api');

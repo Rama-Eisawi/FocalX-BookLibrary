@@ -6,8 +6,7 @@ use App\Http\Requests\UserFormRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\User;
 use App\Services\UserService;
-use GuzzleHttp\Promise\Create;
-use Illuminate\Http\Request;
+
 
 class UserController extends Controller
 {

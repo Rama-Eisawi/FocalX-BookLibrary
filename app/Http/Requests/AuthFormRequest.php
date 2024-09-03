@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class UserFormRequest extends FormRequest
+class AuthFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -37,15 +37,27 @@ class UserFormRequest extends FormRequest
      */
     public function rules(): array
     {
-        // Get the ID of the user being updated, if applicable
-        $userId = $this->route('user') !== null ? $this->route('user')->id : null;
+        // Determine the mode (login or register)
+        $route = $this->route()->getName();
+        if ($route === 'auth.register') {
+            return $this->registrationRules();
+        } elseif ($route === 'auth.login') {
+            return $this->loginRules();
+        }
 
-        // Check if the request is for updating an existing book
-        //$isUpdate = $this->route('user') !== null;
-
+        return [];
+    }
+    //----------------------------------------------------------------------------------------
+    /**
+     * Validation rules for registration.
+     *
+     * @return array
+     */
+    protected function registrationRules()
+    {
         return [
+
             'name' => [
-                $userId ? 'sometimes' : 'required',  // Use 'sometimes' for updates
                 'required',
                 'string',
                 'between:2,255',
@@ -55,19 +67,16 @@ class UserFormRequest extends FormRequest
             // and can only contain letters, spaces, and hyphens.
 
             'email' => [
-                $userId ? 'sometimes' : 'required',
                 'required',
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('users', 'email')->ignore($userId),
-                //'unique:users,email'
+                'unique:users,email',
             ],
             // The 'email' field is required, must be a valid email address, max 255 characters,
             // and must be unique in the 'users' table, email column.
 
             'password' => [
-                $userId ? 'sometimes' : 'required',
                 'required',
                 'string',
                 'min:8', // Minimum length of 8 characters
@@ -77,6 +86,19 @@ class UserFormRequest extends FormRequest
                 'regex:/[@$!%*?&-_]/', // At least one special character
             ],
             // The 'password' field is required, must be a string, and should adhere to Laravel's password rule.
+        ];
+    }
+    //----------------------------------------------------------------------------------------
+    /**
+     * Validation rules for login.
+     *
+     * @return array
+     */
+    protected function loginRules()
+    {
+        return [
+            'email' => 'required|string|email|exists:users,email',
+            'password' => 'required|string',
         ];
     }
     //----------------------------------------------------------------------------------------
@@ -92,7 +114,7 @@ class UserFormRequest extends FormRequest
         throw new HttpResponseException(
             ApiResponse::error(
                 [$validator->errors()],
-                'Validation errors occurred during the update.',
+                'Validation errors occurred .',
                 422
             )
         );
@@ -131,7 +153,8 @@ class UserFormRequest extends FormRequest
             'email.string' => 'حقل :attribute يجب أن يكون نصًا صحيحًا.',
             'email.email' => 'حقل :attribute يجب أن يكون بريدًا إلكترونيًا صحيحًا.',
             'email.max' => 'حقل :attribute يجب ألا يتجاوز 255 حرفًا.',
-            'email.unique' => 'البريد الإلكتروني :attribute مستخدم بالفعل.',
+            'email.unique' => 'حقل :attribute مستخدم بالفعل.',
+            'email.exists' => 'حقل :attribute غير صحيح',
 
             // Custom messages for the 'password' field
             'password.required' => 'حقل :attribute مطلوب.',
