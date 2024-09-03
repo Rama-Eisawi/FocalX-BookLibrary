@@ -28,6 +28,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(BorrowRecord::class);
     }
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
     public function getJWTIdentifier()
     {
         return $this->getKey();

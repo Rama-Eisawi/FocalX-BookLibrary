@@ -54,10 +54,7 @@ class BorrowRecordFormRequest extends FormRequest
                     }
                 },
             ],
-            //'user_id' => 'required|exists:users,id',
-            /*'borrowed_at' => 'required|date|before_or_equal:today',
-            'due_date' => 'required|date|after:borrowed_at',
-            'returned_at' => 'nullable|date|after:borrowed_at',*/
+
         ];
     }
 
@@ -84,10 +81,6 @@ class BorrowRecordFormRequest extends FormRequest
     {
         return [
             'book_id' => 'معرف الكتاب',
-            //'user_id' => 'معرف المستخدم',
-            //'borrowed_at' => 'تاريخ الاستعارة',
-            //'due_date' => 'تاريخ الاعادة',
-            //'returned_at' => 'تاريخ الارجاع',
         ];
         // Custom attribute names used in error messages to be more user-friendly.
     }

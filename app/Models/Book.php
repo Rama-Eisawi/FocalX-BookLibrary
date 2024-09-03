@@ -14,10 +14,29 @@ class Book extends Model
     {
         return $this->hasMany(BorrowRecord::class);
     }
-
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
     /**
-     * Determine if the book is currently borrowed.
+     * Scope a query to only include books by a given author.
      *
-     * @return bool
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $author
+     * @return \Illuminate\Database\Eloquent\Builder
      */
+    public function scopeByAuthor($query, $author)
+    {
+        return $query->where('author', 'like', '%' . $author . '%');
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    public function scopeAvailableForBorrowing($query)
+    {
+        return $query->whereDoesntHave('borrowRecords', function ($q) {
+            $q->whereNull('returned_at');
+        });
+    }
 }

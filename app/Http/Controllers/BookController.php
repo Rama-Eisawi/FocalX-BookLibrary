@@ -6,6 +6,7 @@ use App\Http\Requests\BookFormRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Book;
 use App\Services\BookService;
+use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
@@ -17,10 +18,25 @@ class BookController extends Controller
     /**
      * Show all books.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::all();
-        return ApiResponse::success($books, 'Books retrieved successfully');
+        // Get the filter parameters from the request
+        $author = $request->query('author');
+        $categoryId = $request->query('category');
+
+        // Create a query builder instance for Book
+        $booksQuery = Book::query();
+
+        // Apply the filter if the 'author' parameter is provided
+        if ($author) {
+            $booksQuery->byAuthor($author);
+        }
+        if ($categoryId) {
+            $booksQuery->where('category_id', $categoryId);
+        }
+        $books = $booksQuery->with(['category', 'ratings'])->availableForBorrowing()->get();
+        // Return the list of books with a success message
+        return ApiResponse::success($books, 'Books fetched successfully', 200);
     }
     //----------------------------------------------------------------------------------------
     /**

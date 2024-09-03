@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{AuthController, BookController, BorrowRecordController, UserController};
+use App\Http\Controllers\{AuthController, BookController, BorrowRecordController, RatingController, UserController};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,8 +26,12 @@ Route::controller(AuthController::class)
         Route::post('logout', 'logout')->name('auth.logout')->middleware('auth:api'); //This middleware ensures that the user is authenticated via a JWT token
     });
 
+Route::get('books/{bookId}/ratings', [RatingController::class, 'index']);
 
 Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('borrow', BorrowRecordController::class);
-    Route::post('borrow-records/{id}/return', [BorrowRecordController::class, 'returnBook']);
+    Route::post('ratings', [RatingController::class, 'store']);
+    Route::get('ratings/{id}', [RatingController::class, 'show']);
+    Route::put('ratings/{id}', [RatingController::class, 'update']);
+    Route::delete('ratings/{id}', [RatingController::class, 'destroy']);
 });
